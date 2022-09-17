@@ -19,8 +19,8 @@ String[] spamParaTwo = new String[]{
   "Please respond to this email with your account details so that we can protect your account.",
   "We will give you generous financial aid if you apply to Andrew University.",
   "ORDER DETAILS Paid 1M Generic Express - Meal Equivalency",
-  "CLICK FOR FREE MONEY!!!!!!!"
-};
+  "CLICK FOR FREE MONEY!!!!!!!"};
+ 
 String[] spamParaThree = new String[]{
   "",
   "If you don’t reply, my funds will disappear. Please help! \n Kisses, \n Prince",
@@ -29,8 +29,9 @@ String[] spamParaThree = new String[]{
   "Make sure to respond as soon as possible to prevent as much damage as possible.",
   "Early applications close in 2 weeks. We can’t wait for you to be a bulldog!",
   "Pickup: Jane Doe \n PAYMENT \n Block Meals + Flex: ****",
-  "FREE IPHONE 15 :)"
-};
+  "FREE IPHONE 15 :)"};
+
+String[] spamTitles = new String[]{"GoFundMe", "Help Please", "Security Breach", "Bank Sus Behavior", "Amazon Account Update", "Apply for free!", "Confirmation of Order", "URGENT"};
 
 String[] paraOne = new String[]{
 "Welcome to HackCMU 2022! We’re so excited to see all the projects you make and everything you learn over the weekend. We hope that you are as hyped as we are!",
@@ -53,6 +54,7 @@ String[] paraTwo = new String[]{
 "It’s going to be so much fun!",
 "One of the staff called out sick.",
 "Do you want to get coffee on Thursday?"};
+
 String[] paraThree = new String[]{
 "See you soon! \n ACM@CMU Team",
 "Thanks for your understanding. \n \n Best Regards, \n Amy",
@@ -64,6 +66,8 @@ String[] paraThree = new String[]{
 "Let me know if you are available.",
 "Hope to see you soon."};
 
+String[] regTitles = new String[]{"HackCMU", "Meeting Today", "Guys Help", "Team Meet", "Sick Day", "Task 3 Completion", "Lunch Date!", "Covering Shift", "Long Time No See"};
+
 boolean swipeLeft = false;
 boolean swipeRight = false;
 
@@ -74,6 +78,7 @@ class emails{
   float x, y;
   String[] txt;
   boolean isSpam;
+  float[] rgb = new float[3];
   
   emails(){
     title = "";
@@ -89,6 +94,9 @@ class emails{
     isSpam = b;
     x = 55;
     y = 80;
+    rgb[0] = random(0, 255);
+    rgb[1] = random(0, 255);
+    rgb[2] = random(0, 255);
   }
   
   void display(){
@@ -103,15 +111,18 @@ class emails{
     //title
     text(title + "\n\n", x+20, y+25, 390, 640);
     //profile icon
-    fill(100, 200, 0);
+    fill(rgb[0], rgb[1], rgb[2]);
     strokeWeight(2);
-    circle(x+40, y+100, 45);
+    circle(x+40, y+95, 45);
     fill(0);
     // display each paragraph
-    for(int i = 0; i < txt.length; i++){
-      textSize(22);
-      text(txt[i] + "\n\n", x+25, y+150 + i*150, 390, 640);
-    }
+    String temp = txt[0] + "\n\n" + txt[1] + "\n\n" + txt[2];
+    textSize(22);
+    text(temp, x+25, y+140, 390, 640);
+    //for(int i = 0; i < txt.length; i++){
+    //  textSize(22);
+    //  text(txt[i] + "\n\n", x+25, y+130 + i*180, 390, 640);
+    //}
     
   }
   
@@ -121,6 +132,8 @@ class emails{
 void setup(){
   size(560, 800);
   createEmails();
+  PFont myFont = loadFont("LucidaSans-24.vlw");
+  textFont(myFont);
 }
 
 // runs 60 times per second (60 fps)
@@ -140,10 +153,11 @@ void animate(emails e){
   }
   
   if(e.x < -450 || e.x > 560) {
-    println("removing");
+    //println("removing");
     swipeRight = false;
     swipeLeft = false;
     arr.remove(e);
+    vel = 1;
   }
 }
 
@@ -159,11 +173,19 @@ void drawEmails(){
 }
 
 void createEmails(){  
-  arr.add(new emails("Test1", genText(), false));
-  arr.add(new emails("Test2", genText(), false));
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
 }
 
-String[] genText(){
+emails genMail(){
   String[] ret = new String[3];
   // index for arrays
   
@@ -173,20 +195,24 @@ String[] genText(){
     ret[0] = paraOne[i];
     ret[1] = paraTwo[i];
     ret[2] = paraThree[i];
+    emails temp = new emails(regTitles[i], ret, false);
+    return temp;
   }
   else{
-    ret[0] = spamParaOne[(int)random(0, 8)];
+    int i = (int)random(0, 8);
+    ret[0] = spamParaOne[i];
     ret[1] = spamParaTwo[(int)random(0, 8)];
     ret[2] = spamParaThree[(int)random(0, 8)];
+    emails temp = new emails(spamTitles[i], ret, true);
+    return temp;
   }
-  
-  return ret;
 }
 
 void drawBg(){
   background(225);
   fill(225);
-  strokeWeight(20);
+  noStroke();
+  //strokeWeight(20);
   stroke(50, 50, 50);
   rect(0, 0, 560, 800);
   
