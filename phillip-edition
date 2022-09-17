@@ -1,4 +1,5 @@
 // list of emails
+import java.util.*;
 ArrayList<emails> arr = new ArrayList<>();
 
 // email text options
@@ -75,6 +76,7 @@ String[] spamResp = new String[]{"Donated! Hope all goes well.", "Oh no! My info
 int spamLen = 8;
 int regLen = 9;
 
+
 boolean swipeLeft = false;
 boolean swipeRight = false;
 
@@ -118,7 +120,6 @@ class emails{
     // text
     fill(0);
     textSize(25);
-    
     //title
     text(title + "\n\n", x+20, y+25, 390, 640);
     //profile icon
@@ -134,8 +135,34 @@ class emails{
     //  textSize(22);
     //  text(txt[i] + "\n\n", x+25, y+130 + i*180, 390, 640);
     //}
+    
   }
   
+}
+
+Button[] bs = new Button[4];
+class Button{
+  float posx;
+  float posy;
+  String resp;
+  Button(float px, float py, String rp){
+    posx=px;
+    posy=py;
+    resp=rp;
+  }
+  void display(){
+    fill(255);
+    stroke(255);
+    rect(posx, posy, 300, 75, 100);
+  }
+  boolean isTouched(){
+    if (mouseX >= posx && mouseX <= posx+300 && mouseY >= posy && mouseY <= posy+75) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
 }
 
 // runs once at beginning and NEVER again (unless called like a function)
@@ -152,7 +179,6 @@ void draw(){
   drawBg();
   checkGameOver();
   drawEmails();
-  checkGameOver();
 }
 
 // animates the swiping of the emails
@@ -186,17 +212,10 @@ void drawEmails(){
   }
 }
 
-void createEmails(){  
-  arr.add(genMail());
-  arr.add(genMail());
-  arr.add(genMail());
-  arr.add(genMail());
-  arr.add(genMail());
-  arr.add(genMail());
-  arr.add(genMail());
-  arr.add(genMail());
-  arr.add(genMail());
-  arr.add(genMail());
+void createEmails(){
+  for (int i=0; i<10; i++) {
+    arr.add(genMail());
+  }
 }
 
 // generates random emails
@@ -224,7 +243,7 @@ emails genMail(){
   }
 }
 
-String[] genResp(emails e){
+void genResp(emails e){
   boolean spammy = e.isSpam;
   int r1 = e.resp;
   String[] ret = new String[4];
@@ -261,8 +280,12 @@ String[] genResp(emails e){
     }
     ret[3] = spamResp[r4];
   }
-  
-  return ret;
+  Collections.shuffle(Arrays.asList(ret));
+  for (int i=0; i<4; i++){
+    bs[i].resp = ret[i];
+  }
+}
+void setButtons(){
 }
 
 // draws the background
@@ -301,7 +324,6 @@ void checkSpam() {
 // detects the swipe direction
 void mouseDragged(){
   //println("press");
-  
   if((pmouseX - mouseX) < 0){
      swipeRight = true;
      //println("Right");
@@ -309,10 +331,10 @@ void mouseDragged(){
   if((pmouseX - mouseX) > 0){
     swipeLeft = true;
     //println("Left");
-  }   
+  }
 }
 
-boolean gameOver;  // checkSpam
+boolean gameOver;
 String finalTime;
 
 //displays timer
@@ -331,7 +353,6 @@ String timer() {
   }
   fill(0);
   textSize(32);
-  text(str(gameOver), 200, 40, 150, 50);
   if (!gameOver) { 
     text(minutes + seconds + milliseconds, 200, 10, 150, 50);
     return minutes + seconds + milliseconds;
@@ -339,6 +360,7 @@ String timer() {
     text(finalTime, 200, 10, 150, 50);
     return finalTime;
   }
+  //text(str(gameOver), 200, 40, 150, 50);
 }
 
 //passively checks when game ends
