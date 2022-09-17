@@ -1,126 +1,249 @@
+// list of emails
+ArrayList<emails> arr = new ArrayList<>();
+
+// email text options
+String[] spamParaOne = new String[]{
+"I come to you in my time of greatest need. My vault has been burglarized and all gold ingots have been stolen!",
+"Prince speaking, I need your help! My land has been seized, and we need an American outlet.",
+"This is Carnegeie Mellon University, we detected a SIO login from an unknown location.",
+"Hi, this is Bank of America. We detected some suspicious behavior on your account.",
+"Hello Amazon Customer, someone who knows your password is attempting to sign into your account.",
+"Apply now to Andrew University! You don’t need to submit any supplements.",
+"Order approved, thank you! Your order was successfully processed at 12:06PM on 09/16/2022.",
+"CliVK the L1nk: http://ihfsfhguhwefiuh123235903748927349865394tusrgbskjdgbsdf.zip (download)"};
+String[] spamParaTwo = new String[]{
+  "I have started a gofundme - http://normalwebsite.com, if you have even one shred of human decency, please me",
+  "Please reply with your address and social security number so that we can send the first $10,000 check immediately.",
+  "Please reply with your Andrew ID and password to deny the attempt.",
+  "Email us your email and bank account number immediately to verify your account.",
+  "Please respond to this email with your account details so that we can protect your account.",
+  "We will give you generous financial aid if you apply to Andrew University.",
+  "ORDER DETAILS Paid 1M Generic Express - Meal Equivalency",
+  "CLICK FOR FREE MONEY!!!!!!!"};
+ 
+String[] spamParaThree = new String[]{
+  "",
+  "If you don’t reply, my funds will disappear. Please help! \n Kisses, \n Prince",
+  "You have 24 hours to complete the requested action. \n Love, CMU",
+  "Verify your account immediately or else your account funds will be frozen.",
+  "Make sure to respond as soon as possible to prevent as much damage as possible.",
+  "Early applications close in 2 weeks. We can’t wait for you to be a bulldog!",
+  "Pickup: Jane Doe \n PAYMENT \n Block Meals + Flex: ****",
+  "FREE IPHONE 15 :)"};
+
+String[] spamTitles = new String[]{"GoFundMe", "Help Please", "Security Breach", "Bank Sus Behavior", "Amazon Account Update", "Apply for free!", "Confirmation of Order", "URGENT"};
+
+String[] paraOne = new String[]{
+"Welcome to HackCMU 2022! We’re so excited to see all the projects you make and everything you learn over the weekend. We hope that you are as hyped as we are!",
+"Hello All, \n \n I just got a call from my brother and he’s not feeling well. So, unfortunately, I won't be able to meet.",
+"Hey guys,",
+"Hello, \n There is a team meeting scheduled for tomorrow afternoon.",
+"Sorry everyone, I’m not feeling well.",
+"Hello, \n Someone needs to complete task 3 on the checklist.",
+"Hi girly! I can’t wait for our lunch date.",
+"Hello, \n Is it possible for you to come in today to cover a shift.",
+"Hey, how have you been? I haven’t talked to you in a while."};
+
+String[] paraTwo = new String[]{
+"Access our schedule on hackcmu.com. \n Join our discord to receive important announcements, talk to other hackers and to the organizers!",
+"Can we reschedule our lunch plans to next week? Please let me know what times you’re available.",
+"Anyone know when 151 is due?",
+"Make sure to be on time.",
+"The presentations need to be moved online.",
+"The customer needs the document as soon as possible.",
+"It’s going to be so much fun!",
+"One of the staff called out sick.",
+"Do you want to get coffee on Thursday?"};
+
+String[] paraThree = new String[]{
+"See you soon! \n ACM@CMU Team",
+"Thanks for your understanding. \n \n Best Regards, \n Amy",
+"Please.",
+"Look forward to seeing everyone there.",
+"Does this work for everyone?",
+"Please reply if you can complete it.",
+"See you later!",
+"Let me know if you are available.",
+"Hope to see you soon."};
+
+String[] regTitles = new String[]{"HackCMU", "Meeting Today", "Guys Help", "Team Meet", "Sick Day", "Task 3 Completion", "Lunch Date!", "Covering Shift", "Long Time No See"};
+
+boolean swipeLeft = false;
+boolean swipeRight = false;
+
+float vel = 1;
+
 class emails{
+  String title;
+  float x, y;
   String[] txt;
   boolean isSpam;
+  float[] rgb = new float[3];
   
   emails(){
+    title = "";
     txt = new String[]{};
     isSpam = false;
+    x = 55;
+    y = 80;
   }
   
-  emails(String[] t, boolean b) {
+  emails(String title1, String[] t, boolean b) {
+    title = title1;
     txt = t;
     isSpam = b;
+    x = 55;
+    y = 80;
+    rgb[0] = random(0, 255);
+    rgb[1] = random(0, 255);
+    rgb[2] = random(0, 255);
   }
   
   void display(){
-    int textSize = 22;
-    int l = 70;
-    int r = 440;
-    int blockHeight = 640;
-    int spacing = 60;
-    int startFirstBlock = 200; 
-    
-    textSize(textSize);
     fill(240);
     strokeWeight(10);
     stroke(200, 200, 200);
     // base rectangle, background card shape
-    rect(55, 80, 440, 640);
-    
+    rect(x, y, 440, 640, 20);
     // text
     fill(0);
+    textSize(25);
+    //title
+    text(title + "\n\n", x+20, y+25, 390, 640);
+    //profile icon
+    fill(rgb[0], rgb[1], rgb[2]);
+    strokeWeight(2);
+    circle(x+40, y+95, 45);
+    fill(0);
     // display each paragraph
-    for(int i = 0; i < txt.length; i++){
-      text(txt[i] + "\n\n", l, startFirstBlock + i*spacing, r, blockHeight);
-    }
-    
-    // greeting & closing
-    text("Dear _______,", l, 100, r-l, 50);
-    text("Sincerely, _____________", l, 600, 200, 50);
+    String temp = txt[0] + "\n\n" + txt[1] + "\n\n" + txt[2];
+    textSize(22);
+    text(temp, x+25, y+140, 390, 640);
+    //for(int i = 0; i < txt.length; i++){
+    //  textSize(22);
+    //  text(txt[i] + "\n\n", x+25, y+130 + i*180, 390, 640);
+    //}
     
   }
+  
 }
-
-// list of emails
-ArrayList<emails> arr = new ArrayList<>();
-// amount of emails
-int eLen = 10;
 
 // runs once at beginning and NEVER again (unless called like a function)
 void setup(){
-  size(550, 800);
+  size(560, 800);
   createEmails();
-  x = 275;
-  y = 275;
-  fill(0);
+  PFont myFont = loadFont("LucidaSans-24.vlw");
+  textFont(myFont);
 }
 
 // runs 60 times per second (60 fps)
 void draw(){
   drawBg();
   drawEmails();
-  drawCircle();
+}
+
+void animate(emails e){
+  if(swipeRight) {
+    e.x += vel;
+    vel += 1;
+  }
+  else if(swipeLeft){
+    e.x -= vel;
+    vel += 1;
+  }
+  
+  if(e.x < -450 || e.x > 560) {
+    //println("removing");
+    swipeRight = false;
+    swipeLeft = false;
+    arr.remove(e);
+    vel = 1;
+  }
 }
 
 // draws the emails on the screen
 void drawEmails(){
-  int len = 1;
-  
-  int rand = 0;
-  //int rand = int(random(arr.size()));
-  
-  for(int i = rand; i<rand+1; i++){
-    arr.get(i).display();
+  if(arr.size() >= 2) {
+    arr.get(1).display();
+  }
+  if(arr.size() >= 1) {
+    arr.get(0).display();
+    animate(arr.get(0));
   }
 }
 
-void createEmails(){
-  arr.add(new emails(new String[]{"test1", "ttttest1", "YXXYttttest1"}, false));
-  arr.add(new emails(new String[]{"test2", "ttttest2", "YYttttest2"}, true));
-  arr.add(new emails(new String[]{"test3", "ttttest3", "YYttttest3"}, false));
+void createEmails(){  
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+}
+
+emails genMail(){
+  String[] ret = new String[3];
+  // index for arrays
+  
+  float brand = random(0, 1);
+  if(brand < 0.5){
+    int i = (int)random(0, 9);
+    ret[0] = paraOne[i];
+    ret[1] = paraTwo[i];
+    ret[2] = paraThree[i];
+    emails temp = new emails(regTitles[i], ret, false);
+    return temp;
+  }
+  else{
+    int i = (int)random(0, 8);
+    ret[0] = spamParaOne[i];
+    ret[1] = spamParaTwo[(int)random(0, 8)];
+    ret[2] = spamParaThree[(int)random(0, 8)];
+    emails temp = new emails(spamTitles[i], ret, true);
+    return temp;
+  }
 }
 
 void drawBg(){
   background(225);
   fill(225);
-  strokeWeight(20);
+  
+  checkSpam();
+  
+  noStroke();
+  //strokeWeight(20);
   stroke(50, 50, 50);
-  rect(0, 0, 550, 800);
-}
-
-int x, y, xSpeed, ySpeed;
-int mouseXPressed, mouseYPressed;
-int pMouseX, pMouseY;
-
-void mousePressed() {
-  mouseXPressed = mouseX;
-  mouseYPressed = mouseY;
-  pMouseX = mouseX;
-  pMouseY = mouseY;
-}
-
-void mouseReleased() {
-  int dx = mouseX - mouseXPressed;
-  int dy = mouseY - mouseYPressed;
+  rect(0, 0, 560, 800);
   
-  xSpeed = xSpeed + dx/20;
-  ySpeed = ySpeed + dy/20;
+  noStroke();
+  fill(100);
+  rect(90, 115, 440, 640, 20);
+  fill(150);
+  rect(75, 100, 440, 640, 20);
 }
 
-void drawCircle() {
-  ellipse(x, y, 60, 60);
-  x += xSpeed;
-  y += ySpeed;
- 
-  // not spam
-  if (x > (pMouseX+10) && pMouseX != 0) {
-    fill(0, 0, 255);
-    ellipse(x, y, 60, 60);
+void checkSpam() {
+  if ((swipeRight && !arr.get(0).isSpam) || (swipeLeft && arr.get(0).isSpam)) {
+    fill(0,225,0);
   }
-  
-  // spam 
-  if (x < (pMouseX-10) && pMouseX != 0) {
-    fill(255, 0, 0);
-    ellipse(x, y, 60, 60);
+  if ((swipeRight && arr.get(0).isSpam) || (swipeLeft && !arr.get(0).isSpam)) {
+    fill(225,0,0);
+  }
+}
+
+
+void mouseDragged(){
+  //println("press");
+  if((pmouseX - mouseX) < 0){
+     swipeRight = true;
+     //println("Right");
+  }
+  if((pmouseX - mouseX) > 0){
+    swipeLeft = true;
+    //println("Left");
   }
 }
