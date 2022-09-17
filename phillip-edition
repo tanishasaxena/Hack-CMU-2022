@@ -50,15 +50,17 @@ int eLen = 10;
 void setup(){
   size(550, 800);
   createEmails();
+  x = 275;
+  y = 275;
+  fill(0);
 }
 
 // runs 60 times per second (60 fps)
 void draw(){
   drawBg();
   drawEmails();
+  drawCircle();
 }
-
-
 
 // draws the emails on the screen
 void drawEmails(){
@@ -84,4 +86,41 @@ void drawBg(){
   strokeWeight(20);
   stroke(50, 50, 50);
   rect(0, 0, 550, 800);
+}
+
+int x, y, xSpeed, ySpeed;
+int mouseXPressed, mouseYPressed;
+int pMouseX, pMouseY;
+
+void mousePressed() {
+  mouseXPressed = mouseX;
+  mouseYPressed = mouseY;
+  pMouseX = mouseX;
+  pMouseY = mouseY;
+}
+
+void mouseReleased() {
+  int dx = mouseX - mouseXPressed;
+  int dy = mouseY - mouseYPressed;
+  
+  xSpeed = xSpeed + dx/20;
+  ySpeed = ySpeed + dy/20;
+}
+
+void drawCircle() {
+  ellipse(x, y, 60, 60);
+  x += xSpeed;
+  y += ySpeed;
+ 
+  // not spam
+  if (x > (pMouseX+10) && pMouseX != 0) {
+    fill(0, 0, 255);
+    ellipse(x, y, 60, 60);
+  }
+  
+  // spam 
+  if (x < (pMouseX-10) && pMouseX != 0) {
+    fill(255, 0, 0);
+    ellipse(x, y, 60, 60);
+  }
 }
