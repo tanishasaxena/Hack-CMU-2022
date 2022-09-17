@@ -1,18 +1,59 @@
 class emails{
-  float x, y;
-  String text;
+  String txt;
+  boolean isSpam;
+  
+  emails(){
+    txt = "";
+    isSpam = false;
+  }
+  
+  emails(String t, boolean b) {
+    txt = t;
+    isSpam = b;
+  }
   
   void display(){
     fill(240);
+    strokeWeight(10);
+    stroke(200, 200, 200);
+    // base rectangle, background card shape
+    rect(55, 80, 440, 640);
+    // text
+    fill(0);
+    text(txt, 55, 80, 440, 640);
   }
 }
 
+// list of emails
+ArrayList<emails> arr = new ArrayList<>();
+// amount of emails
+int eLen = 10;
+
+// runs once at beginning and NEVER again (unless called like a function)
 void setup(){
   size(550, 800);
+  createEmails();
 }
 
+// runs 60 times per second (60 fps)
 void draw(){
   drawBg();
+  drawEmails();
+}
+
+
+
+// draws the emails on the screen
+void drawEmails(){
+  int len = 1;
+  for(int i = 0; i<len; i++){
+    arr.get(i).display();
+  }
+}
+
+void createEmails(){
+  arr.add(new emails("test test test test test test test test tetst stets setse tset tets", false));
+  arr.add(new emails("test test test test test test test test tetst stets setse tset tets", false));
 }
 
 void drawBg(){
