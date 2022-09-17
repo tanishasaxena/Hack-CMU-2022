@@ -84,6 +84,7 @@ boolean swipeLeft = false;
 boolean swipeRight = false;
 
 float vel = 1;
+int score = 0;
 
 class emails{
   String title;
@@ -198,6 +199,7 @@ void draw(){
 void drawStartScreen(){
   background(100);
   textAlign(CENTER, CENTER);
+  fill(240);
   textSize(50);
   text("Welcome to \n SPAMBAM", width/2, height/2 - 200);
   textSize(25);
@@ -208,6 +210,15 @@ void drawStartScreen(){
 
 void drawEndScreen(){
   background(100);
+  fill(240);
+  textAlign(CENTER, CENTER);
+  textSize(50);
+  text("Training Complete", width/2, height/2 - 200);
+  textSize(30);
+  text("You went through all emails in " + finalTime, width/2, height/2);
+  text("You score is: " + score, width/2, height/2 + 100);
+  text("Click to play again", width/2, height/2+200);
+  textAlign(LEFT, TOP);
 }
 
 // animates the swiping of the emails
@@ -222,7 +233,10 @@ void animate(emails e){
   }
   
   if(e.x < -450 || e.x > width) {
-    //println("removing");
+    if(correctResp) {
+      score += 100;
+      correctResp = false;
+    }
     swipeRight = false;
     swipeLeft = false;
     arr.remove(e);
@@ -367,7 +381,7 @@ emails e = new emails();
 
 // checks the correctness of the swipe
 void checkSpam() {
-  e = arr.get(0);
+  if(arr.size() > 0) e = arr.get(0);
   String eResp = "";
   if(e.isSpam) eResp = spamResp[e.resp];
   else eResp = regResp[e.resp];
@@ -375,20 +389,26 @@ void checkSpam() {
   if(arr.size() > 0){
     e = arr.get(0);
     if ((swipeRight && !e.isSpam && eResp.equals(clicked.resp)) || (swipeLeft && e.isSpam)) {
-      println(eResp);
-      println(clicked.resp);
+      //println(eResp);
+      //println(clicked.resp);
       fill(0,225,0);
+      correctResp = true;
     }
     if ((swipeRight && e.isSpam) || (swipeLeft && !e.isSpam) || (swipeRight && !e.isSpam && !eResp.equals(clicked.resp))) {
-      println("eresp: " + eResp);
-      println("clicked: " + clicked.resp);
+      //println("eresp: " + eResp);
+      //println("clicked: " + clicked.resp);
       fill(225,0,0);
     }
   }
 }
 
+int startTime;
+
 void mousePressed(){
-  if(screen == 0) screen = 1;
+  if(screen == 0){
+    screen = 1;
+    startTime = frameCount;
+  } 
   else if (screen == 1){
     for(Button b : bs){
       if(b.isTouched()){
@@ -396,6 +416,15 @@ void mousePressed(){
         clicked = b;
       }
     }
+  }
+  else {
+    startTime = frameCount;
+    screen = 1;
+    size(840, 800);
+    createEmails();
+    setButtons();
+    if(arr.size() >= 1) genResp(arr.get(0));
+    score = 0;
   }
 }
 
@@ -417,9 +446,9 @@ String finalTime = "";
 
 //displays timer
 String timer() {
-  String milliseconds = str((frameCount)%60);
-  String seconds = str((frameCount)/60) + ":";
-  String minutes = str((frameCount/60)/60) + ":";
+  String milliseconds = str((frameCount-startTime)%60);
+  String seconds = str((frameCount-startTime)/60) + ":";
+  String minutes = str((frameCount-startTime)/3600) + ":";
   if (milliseconds.length() == 1) {
     milliseconds = "0" + milliseconds;
   }
@@ -431,13 +460,14 @@ String timer() {
   }
   fill(0);
   textSize(32);
-  if (!gameOver) { 
+  if (screen == 1) { 
     text(minutes + seconds + milliseconds, 200, 10, 150, 50);
     return minutes + seconds + milliseconds;
-  } else {
+  } else if (screen == 2) {
     text(finalTime, 200, 10, 150, 50);
     return finalTime;
   }
+  return null;
   //text(str(gameOver), 200, 40, 150, 50);
 }
 
