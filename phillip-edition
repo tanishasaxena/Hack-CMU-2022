@@ -1,0 +1,87 @@
+class emails{
+  String[] txt;
+  boolean isSpam;
+  
+  emails(){
+    txt = new String[]{};
+    isSpam = false;
+  }
+  
+  emails(String[] t, boolean b) {
+    txt = t;
+    isSpam = b;
+  }
+  
+  void display(){
+    int textSize = 22;
+    int l = 70;
+    int r = 440;
+    int blockHeight = 640;
+    int spacing = 60;
+    int startFirstBlock = 200; 
+    
+    textSize(textSize);
+    fill(240);
+    strokeWeight(10);
+    stroke(200, 200, 200);
+    // base rectangle, background card shape
+    rect(55, 80, 440, 640);
+    
+    // text
+    fill(0);
+    // display each paragraph
+    for(int i = 0; i < txt.length; i++){
+      text(txt[i] + "\n\n", l, startFirstBlock + i*spacing, r, blockHeight);
+    }
+    
+    // greeting & closing
+    text("Dear _______,", l, 100, r-l, 50);
+    text("Sincerely, _____________", l, 600, 200, 50);
+    
+  }
+}
+
+// list of emails
+ArrayList<emails> arr = new ArrayList<>();
+// amount of emails
+int eLen = 10;
+
+// runs once at beginning and NEVER again (unless called like a function)
+void setup(){
+  size(550, 800);
+  createEmails();
+}
+
+// runs 60 times per second (60 fps)
+void draw(){
+  drawBg();
+  drawEmails();
+}
+
+
+
+// draws the emails on the screen
+void drawEmails(){
+  int len = 1;
+  
+  int rand = 0;
+  //int rand = int(random(arr.size()));
+  
+  for(int i = rand; i<rand+1; i++){
+    arr.get(i).display();
+  }
+}
+
+void createEmails(){
+  arr.add(new emails(new String[]{"test1", "ttttest1", "YXXYttttest1"}, false));
+  arr.add(new emails(new String[]{"test2", "ttttest2", "YYttttest2"}, true));
+  arr.add(new emails(new String[]{"test3", "ttttest3", "YYttttest3"}, false));
+}
+
+void drawBg(){
+  background(225);
+  fill(225);
+  strokeWeight(20);
+  stroke(50, 50, 50);
+  rect(0, 0, 550, 800);
+}
