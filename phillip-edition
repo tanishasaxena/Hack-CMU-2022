@@ -22,7 +22,7 @@ String[] spamParaTwo = new String[]{
   "CLICK FOR FREE MONEY!!!!!!!"};
  
 String[] spamParaThree = new String[]{
-  "",
+  "Marking this email as spam is seen as an act of war against me and my people. \n Tread carefully.",
   "If you don’t reply, my funds will disappear. Please help! \n Kisses, \n Prince",
   "You have 24 hours to complete the requested action. \n Love, CMU",
   "Verify your account immediately or else your account funds will be frozen.",
@@ -68,6 +68,14 @@ String[] paraThree = new String[]{
 
 String[] regTitles = new String[]{"HackCMU", "Meeting Today", "Guys Help", "Team Meet", "Sick Day", "Task 3 Completion", "Lunch Date!", "Covering Shift", "Long Time No See"};
 
+String[] regResp = new String[]{"I look forward to being there!", "No problem. Does Saturday 1pm work?", "Yikes, I have no idea sorry :(", "See you at the meeting.", "Sounds, good! Let's set up a Zoom call.", "I can finish the task by tomorrow.", "See u later!", "Sorry, I can’t come in today.", "Sounds good, see you then!"};
+
+String[] spamResp = new String[]{"Donated! Hope all goes well.", "Oh no! My info is XXX@cmu.edu and XXX", "My AID is XXX and password XXX", "My account number is XXX", "My username is XXX.", "I want to apply.", "[Click to cancel order]", "[Click the link]"};
+
+int spamLen = 8;
+int regLen = 9;
+
+
 boolean swipeLeft = false;
 boolean swipeRight = false;
 
@@ -79,6 +87,7 @@ class emails{
   String[] txt;
   boolean isSpam;
   float[] rgb = new float[3];
+  int resp;
   
   emails(){
     title = "";
@@ -86,12 +95,14 @@ class emails{
     isSpam = false;
     x = 55;
     y = 80;
+    resp = 0;
   }
   
-  emails(String title1, String[] t, boolean b) {
+  emails(String title1, String[] t, boolean b, int r) {
     title = title1;
     txt = t;
     isSpam = b;
+    resp = r;
     x = 55;
     y = 80;
     rgb[0] = random(0, 255);
@@ -130,10 +141,10 @@ class emails{
 
 // runs once at beginning and NEVER again (unless called like a function)
 void setup(){
-  size(560, 800);
+  size(800, 800);
   createEmails();
-  PFont myFont = loadFont("LucidaSans-24.vlw");
-  textFont(myFont);
+  //PFont myFont = loadFont("LucidaSans-24.vlw");
+  //textFont(myFont);
 }
 
 // runs 60 times per second (60 fps)
@@ -142,6 +153,7 @@ void draw(){
   drawEmails();
 }
 
+// animates the swiping of the emails
 void animate(emails e){
   if(swipeRight) {
     e.x += vel;
@@ -152,7 +164,7 @@ void animate(emails e){
     vel += 1;
   }
   
-  if(e.x < -450 || e.x > 560) {
+  if(e.x < -450 || e.x > width) {
     //println("removing");
     swipeRight = false;
     swipeLeft = false;
@@ -185,57 +197,105 @@ void createEmails(){
   arr.add(genMail());
 }
 
+// generates random emails
 emails genMail(){
   String[] ret = new String[3];
   // index for arrays
   
   float brand = random(0, 1);
   if(brand < 0.5){
-    int i = (int)random(0, 9);
+    int i = (int)random(0, regLen);
     ret[0] = paraOne[i];
     ret[1] = paraTwo[i];
     ret[2] = paraThree[i];
-    emails temp = new emails(regTitles[i], ret, false);
+    emails temp = new emails(regTitles[i], ret, false, i);
     return temp;
   }
   else{
-    int i = (int)random(0, 8);
+    int i = (int)random(0, spamLen);
+    int i2 = (int)random(0, spamLen);
     ret[0] = spamParaOne[i];
-    ret[1] = spamParaTwo[(int)random(0, 8)];
-    ret[2] = spamParaThree[(int)random(0, 8)];
-    emails temp = new emails(spamTitles[i], ret, true);
+    ret[1] = spamParaTwo[i2];
+    ret[2] = spamParaThree[(int)random(0, spamLen)];
+    emails temp = new emails(spamTitles[i], ret, true, i2);
     return temp;
   }
 }
 
+String[] genResp(emails e){
+  boolean spammy = e.isSpam;
+  int r1 = e.resp;
+  String[] ret = new String[4];
+  
+  if(spammy){
+    ret[0] = spamResp[r1];
+    int r2 = 0;
+    while(r2 == r1){
+      r2 = (int)random(0, spamLen);
+    }
+    ret[1] = spamResp[r2];
+    int r3 = (int)random(0, regLen);
+    ret[2] = regResp[r3];
+    
+    int r4 = 0;
+    while(r4 == r3) {
+      r4 = (int)random(0, regLen);
+    }
+    ret[3] = regResp[r4];
+  }
+  else if(!spammy){
+    ret[0] = regResp[r1];
+    int r2 = 0;
+    while(r2 == r1){
+      r2 = (int)random(0, regLen);
+    }
+    ret[1] = regResp[r2];
+    int r3 = (int)random(0, spamLen);
+    ret[2] = spamResp[r3];
+    
+    int r4 = 0;
+    while(r4 == r3) {
+      r4 = (int)random(0, spamLen);
+    }
+    ret[3] = spamResp[r4];
+  }
+  
+  return ret;
+}
+
+// draws the background
 void drawBg(){
+  
   background(225);
   fill(225);
-  
   checkSpam();
   
   noStroke();
   //strokeWeight(20);
-  stroke(50, 50, 50);
-  rect(0, 0, 560, 800);
+  //stroke(50, 50, 50);
+  rect(0, 0, width, height);
   
   noStroke();
   fill(100);
   rect(90, 115, 440, 640, 20);
   fill(150);
   rect(75, 100, 440, 640, 20);
+  
 }
 
+// checks the correctness of the swipe
 void checkSpam() {
-  if ((swipeRight && !arr.get(0).isSpam) || (swipeLeft && arr.get(0).isSpam)) {
-    fill(0,225,0);
-  }
-  if ((swipeRight && arr.get(0).isSpam) || (swipeLeft && !arr.get(0).isSpam)) {
-    fill(225,0,0);
+  if(arr.size() > 0){
+    if ((swipeRight && !arr.get(0).isSpam) || (swipeLeft && arr.get(0).isSpam)) {
+      fill(0,225,0);
+    }
+    if ((swipeRight && arr.get(0).isSpam) || (swipeLeft && !arr.get(0).isSpam)) {
+      fill(225,0,0);
+    }
   }
 }
 
-
+// detects the swipe direction
 void mouseDragged(){
   //println("press");
   if((pmouseX - mouseX) < 0){
