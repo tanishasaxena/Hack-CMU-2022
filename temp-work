@@ -47,18 +47,21 @@ String[] paraTwo = new String[]{};
 String[] paraThree = new String[]{};
 
 class emails{
+  String title;
   float x, y;
   String[] txt;
   boolean isSpam;
   
   emails(){
+    title = "";
     txt = new String[]{};
     isSpam = false;
     x = 55;
     y = 80;
   }
   
-  emails(String[] t, boolean b) {
+  emails(String title1, String[] t, boolean b) {
+    title = title1;
     txt = t;
     isSpam = b;
     x = 55;
@@ -73,10 +76,18 @@ class emails{
     rect(x, y, 440, 640, 20);
     // text
     fill(0);
+    textSize(25);
+    //title
+    text(title + "\n\n", x+20, y+25, 390, 640);
+    //profile icon
+    fill(100, 200, 0);
+    strokeWeight(2);
+    circle(x+40, y+100, 45);
+    fill(0);
     // display each paragraph
     for(int i = 0; i < txt.length; i++){
       textSize(22);
-      text(txt[i] + "\n\n", x+25, y+100 + i*150, 390, 640);
+      text(txt[i] + "\n\n", x+25, y+150 + i*150, 390, 640);
     }
     
   }
@@ -106,17 +117,17 @@ void drawEmails(){
 }
 
 void createEmails(){
-  
-  arr.add(new emails(genText(), false));
-  arr.add(new emails(genText(), false));
+  arr.add(new emails(spamParaZero[(int)random(1, 8)], genText(), false));
+  arr.add(new emails(spamParaZero[(int)random(1, 8)], genText(), false));
 }
 
 String[] genText(){
-  String[] ret = new String[3];
+  String[] ret = new String[4];
   // index for arrays
   
   float brand = 0.6;
   if(brand < 0.5){
+    //ret[0] = paraZero[(int)random(1,8)];
     ret[0] = paraOne[(int)random(1, 8)];
     ret[1] = paraTwo[(int)random(1, 8)];
     ret[2] = paraThree[(int)random(1, 8)];
