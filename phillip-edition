@@ -2,6 +2,8 @@
 import java.util.*;
 ArrayList<emails> arr = new ArrayList<>();
 
+int screen = 0;
+
 // email text options
 String[] spamParaOne = new String[]{
 "I come to you in my time of greatest need. My vault has been burglarized and all gold ingots have been stolen!",
@@ -76,6 +78,7 @@ String[] spamResp = new String[]{"Donated! Hope all goes well.", "Oh no! My info
 int spamLen = 8;
 int regLen = 9;
 
+Button[] bs = new Button[4];
 
 boolean swipeLeft = false;
 boolean swipeRight = false;
@@ -140,7 +143,6 @@ class emails{
   
 }
 
-Button[] bs = new Button[4];
 class Button{
   float posx;
   float posy;
@@ -151,12 +153,17 @@ class Button{
     resp=rp;
   }
   void display(){
-    fill(255);
-    stroke(255);
-    rect(posx, posy, 300, 75, 100);
+    if(this.isTouched()) fill(230);
+    else fill(255);
+    //stroke(255);
+    rect(posx, posy, 250, 150, 100);
+    // text for buttons
+    fill(0);
+    textSize(22);
+    text(resp, posx+30, posy+30, 200, 130);
   }
   boolean isTouched(){
-    if (mouseX >= posx && mouseX <= posx+300 && mouseY >= posy && mouseY <= posy+75) {
+    if (mouseX >= posx && mouseX <= posx+250 && mouseY >= posy && mouseY <= posy+150) {
       return true;
     }
     else {
@@ -167,18 +174,43 @@ class Button{
 
 // runs once at beginning and NEVER again (unless called like a function)
 void setup(){
-  size(800, 800);
+  size(840, 800);
   createEmails();
-  //PFont myFont = loadFont("LucidaSans-24.vlw");
-  //textFont(myFont);
+  setButtons();
+  if(arr.size() >= 1) genResp(arr.get(0));
 }
 
 // runs 60 times per second (60 fps)
 void draw(){
-  checkGameOver();
-  drawBg();
-  checkGameOver();
-  drawEmails();
+  if(screen == 0) {
+    drawStartScreen();
+  }
+  else if (screen == 1){
+    drawBg();
+    checkGameOver();
+    drawButtons();
+    checkGameOver();
+    drawEmails();
+    checkGameOver();
+  }
+  else{
+    drawEndScreen();
+  }
+}
+
+void drawStartScreen(){
+  background(100);
+  textAlign(CENTER, CENTER);
+  textSize(50);
+  text("Welcome to \n SPAMBAM", width/2, height/2 - 200);
+  textSize(25);
+  text("<-- Swipe left on SPAM", width/2 - 250, height/2);
+  text("Click a response to NOT SPAM", width/2 + 200, height/2);
+  textAlign(LEFT, TOP);
+}
+
+void drawEndScreen(){
+  background(100);
 }
 
 // animates the swiping of the emails
@@ -198,7 +230,12 @@ void animate(emails e){
     swipeLeft = false;
     arr.remove(e);
     vel = 1;
+    if(arr.size() >= 1) genResp(arr.get(0));
   }
+}
+
+void drawButtons(){
+  for(Button b : bs) b.display();
 }
 
 // draws the emails on the screen
@@ -212,18 +249,25 @@ void drawEmails(){
   }
 }
 
-void createEmails(){
-  for (int i=0; i<10; i++) {
-    arr.add(genMail());
-  }
+void createEmails(){  
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
+  arr.add(genMail());
 }
 
 // generates random emails
 emails genMail(){
   String[] ret = new String[3];
-  // index for arrays
   
   float brand = random(0, 1);
+  // is not spam
   if(brand < 0.5){
     int i = (int)random(0, regLen);
     ret[0] = paraOne[i];
@@ -232,6 +276,7 @@ emails genMail(){
     emails temp = new emails(regTitles[i], ret, false, i);
     return temp;
   }
+  // is spam
   else{
     int i = (int)random(0, spamLen);
     int i2 = (int)random(0, spamLen);
@@ -243,6 +288,7 @@ emails genMail(){
   }
 }
 
+// generates the responses on the buttons
 void genResp(emails e){
   boolean spammy = e.isSpam;
   int r1 = e.resp;
@@ -280,43 +326,90 @@ void genResp(emails e){
     }
     ret[3] = spamResp[r4];
   }
+  
+  // setting the responses inside the buttons
   Collections.shuffle(Arrays.asList(ret));
   for (int i=0; i<4; i++){
     bs[i].resp = ret[i];
   }
 }
+
+// sets the buttons to the right location
 void setButtons(){
+  bs[0] = new Button(550, 80, "");
+  bs[1] = new Button(550, 250, "");
+  bs[2] = new Button(550, 420, "");
+  bs[3] = new Button(550, 590, "");
 }
 
 // draws the background
 void drawBg(){
-  
-  background(225);
-  fill(225);
-  checkSpam();
-  
-  noStroke();
-  //strokeWeight(20);
-  //stroke(50, 50, 50);
-  rect(0, 0, width, height);
-  
-  noStroke();
-  fill(100);
-  rect(90, 115, 440, 640, 20);
-  fill(150);
-  rect(75, 100, 440, 640, 20);
-  
-  timer();
+  if (screen != 0) {
+
+      background(225);
+      fill(225);
+      checkSpam();
+      checkGameOver();
+      
+      noStroke();
+      //strokeWeight(20);
+      //stroke(50, 50, 50);
+      rect(0, 0, width, height);
+      
+      noStroke();
+      fill(100);
+      rect(90, 115, 440, 640, 20);
+      fill(150);
+      rect(75, 100, 440, 640, 20);
+      
+      timer();
+
+    
+  }
 }
+
+boolean correctResp = false;
+Button clicked = new Button(1, 2, "");
+emails e = new emails();
 
 // checks the correctness of the swipe
 void checkSpam() {
-  if(!gameOver){
-    if ((swipeRight && !arr.get(0).isSpam) || (swipeLeft && arr.get(0).isSpam)) {
+  String eResp = "";
+  
+  if (screen == 1) {
+    e = arr.get(0);
+    if(e.isSpam) eResp = spamResp[e.resp];
+    else eResp = regResp[e.resp];
+  }
+  
+  if(screen == 1){
+    e = arr.get(0);
+    if ((swipeRight && !e.isSpam && eResp.equals(clicked.resp)) || (swipeLeft && e.isSpam)) {
+      //println(eResp);
+      //println(clicked.resp);
       fill(0,225,0);
     }
-    if ((swipeRight && arr.get(0).isSpam) || (swipeLeft && !arr.get(0).isSpam)) {
+    if ((swipeRight && e.isSpam) || (swipeLeft && !e.isSpam) || (swipeRight && !e.isSpam && !eResp.equals(clicked.resp))) {
+      //println("eresp: " + eResp);
+      //println("clicked: " + clicked.resp);
       fill(225,0,0);
+    }
+  }
+}
+
+int startTime;
+
+void mousePressed(){
+  if(screen == 0) {
+    screen = 1;
+    startTime = frameCount;
+  }
+  else if (screen == 1){
+    for(Button b : bs){
+      if(b.isTouched()){
+        swipeRight = true;
+        clicked = b;
+      }
     }
   }
 }
@@ -324,24 +417,28 @@ void checkSpam() {
 // detects the swipe direction
 void mouseDragged(){
   //println("press");
-  if((pmouseX - mouseX) < 0){
-     swipeRight = true;
-     //println("Right");
+  //if((pmouseX - mouseX) < 0){
+  //   swipeRight = true;
+  //   //println("Right");
+  //}
+  if (screen == 1) {
+    if((pmouseX - mouseX) > 0){
+      swipeLeft = true;
+      //println("Left");
+    }
   }
-  if((pmouseX - mouseX) > 0){
-    swipeLeft = true;
-    //println("Left");
-  }
+  
+  
 }
 
 boolean gameOver;
-String finalTime;
+String finalTime = "";
 
 //displays timer
 String timer() {
-  String milliseconds = str((frameCount)%60);
-  String seconds = str((frameCount)/60) + ":";
-  String minutes = str((frameCount/60)/60) + ":";
+  String milliseconds = str((frameCount-startTime)%60);
+  String seconds = str((frameCount-startTime)/60) + ":";
+  String minutes = str((frameCount-startTime)/3600) + ":";
   if (milliseconds.length() == 1) {
     milliseconds = "0" + milliseconds;
   }
@@ -353,20 +450,25 @@ String timer() {
   }
   fill(0);
   textSize(32);
-  if (!gameOver) { 
+  if (screen == 1) { 
     text(minutes + seconds + milliseconds, 200, 10, 150, 50);
     return minutes + seconds + milliseconds;
-  } else {
+  } else if (screen == 2) {
     text(finalTime, 200, 10, 150, 50);
     return finalTime;
   }
+  return null;
   //text(str(gameOver), 200, 40, 150, 50);
 }
 
 //passively checks when game ends
 void checkGameOver() {
-  if (arr.size() == 0) {
-    finalTime = timer();
-    gameOver = true;
+  if (screen == 1) {
+    if (arr.size() == 0) {
+      gameOver = true;
+      finalTime = timer();
+      screen = 2;
+    }
+    
   }
 }
