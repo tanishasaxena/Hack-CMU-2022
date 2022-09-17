@@ -1,13 +1,13 @@
 class emails{
-  String txt;
+  String[] txt;
   boolean isSpam;
   
   emails(){
-    txt = "";
+    txt = new String[]{};
     isSpam = false;
   }
   
-  emails(String t, boolean b) {
+  emails(String[] t, boolean b) {
     txt = t;
     isSpam = b;
   }
@@ -20,8 +20,12 @@ class emails{
     rect(55, 80, 440, 640);
     // text
     fill(0);
-    text(txt, 55, 80, 440, 640);
+    // display each paragraph
+    for(int i = 0; i < txt.length; i++){
+      text(txt[i] + "\n\n", 55, 80 + i*10, 440, 640);
+    }
   }
+  
 }
 
 // list of emails
@@ -52,8 +56,9 @@ void drawEmails(){
 }
 
 void createEmails(){
-  arr.add(new emails("test test test test test test test test tetst stets setse tset tets", false));
-  arr.add(new emails("test test test test test test test test tetst stets setse tset tets", false));
+  
+  arr.add(new emails(new String[]{"test test", "test test", "test test"}, false));
+  arr.add(new emails(new String[]{"test test", "test test", "test test"}, false));
 }
 
 void drawBg(){
