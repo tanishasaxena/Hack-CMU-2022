@@ -1,0 +1,24 @@
+class emails{
+  float x, y;
+  String text;
+  
+  void display(){
+    fill(240);
+  }
+}
+
+void setup(){
+  size(550, 800);
+}
+
+void draw(){
+  drawBg();
+}
+
+void drawBg(){
+  background(225);
+  fill(225);
+  strokeWeight(20);
+  stroke(50, 50, 50);
+  rect(0, 0, 550, 800);
+}
