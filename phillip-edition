@@ -75,7 +75,6 @@ String[] spamResp = new String[]{"Donated! Hope all goes well.", "Oh no! My info
 int spamLen = 8;
 int regLen = 9;
 
-
 boolean swipeLeft = false;
 boolean swipeRight = false;
 
@@ -119,6 +118,7 @@ class emails{
     // text
     fill(0);
     textSize(25);
+    
     //title
     text(title + "\n\n", x+20, y+25, 390, 640);
     //profile icon
@@ -134,7 +134,6 @@ class emails{
     //  textSize(22);
     //  text(txt[i] + "\n\n", x+25, y+130 + i*180, 390, 640);
     //}
-    
   }
   
 }
@@ -149,8 +148,11 @@ void setup(){
 
 // runs 60 times per second (60 fps)
 void draw(){
+  checkGameOver();
   drawBg();
+  checkGameOver();
   drawEmails();
+  checkGameOver();
 }
 
 // animates the swiping of the emails
@@ -269,7 +271,6 @@ void drawBg(){
   background(225);
   fill(225);
   checkSpam();
-  checkGameOver();
   
   noStroke();
   //strokeWeight(20);
@@ -287,7 +288,7 @@ void drawBg(){
 
 // checks the correctness of the swipe
 void checkSpam() {
-  if(arr.size() > 0){
+  if(!gameOver){
     if ((swipeRight && !arr.get(0).isSpam) || (swipeLeft && arr.get(0).isSpam)) {
       fill(0,225,0);
     }
@@ -300,6 +301,7 @@ void checkSpam() {
 // detects the swipe direction
 void mouseDragged(){
   //println("press");
+  
   if((pmouseX - mouseX) < 0){
      swipeRight = true;
      //println("Right");
@@ -307,10 +309,10 @@ void mouseDragged(){
   if((pmouseX - mouseX) > 0){
     swipeLeft = true;
     //println("Left");
-  }
+  }   
 }
 
-boolean gameOver;
+boolean gameOver;  // checkSpam
 String finalTime;
 
 //displays timer
@@ -329,6 +331,7 @@ String timer() {
   }
   fill(0);
   textSize(32);
+  text(str(gameOver), 200, 40, 150, 50);
   if (!gameOver) { 
     text(minutes + seconds + milliseconds, 200, 10, 150, 50);
     return minutes + seconds + milliseconds;
@@ -336,13 +339,12 @@ String timer() {
     text(finalTime, 200, 10, 150, 50);
     return finalTime;
   }
-  //text(str(gameOver), 200, 40, 150, 50);
 }
 
 //passively checks when game ends
 void checkGameOver() {
   if (arr.size() == 0) {
-    gameOver = true;
     finalTime = timer();
+    gameOver = true;
   }
 }
