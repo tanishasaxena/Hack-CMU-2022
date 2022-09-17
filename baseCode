@@ -3,6 +3,7 @@ import java.util.*;
 ArrayList<emails> arr = new ArrayList<>();
 
 int screen = 0;
+int numEmails = 10;
 
 // email text options
 String[] spamParaOne = new String[]{
@@ -138,10 +139,8 @@ class emails{
     //for(int i = 0; i < txt.length; i++){
     //  textSize(22);
     //  text(txt[i] + "\n\n", x+25, y+130 + i*180, 390, 640);
-    //}
-    
+    //}    
   }
-  
 }
 
 class Button{
@@ -197,26 +196,28 @@ void draw(){
 }
 
 void drawStartScreen(){
-  background(100);
+  background(62, 29, 138);
   textAlign(CENTER, CENTER);
   fill(240);
   textSize(50);
-  text("Welcome to \n SPAMBAM", width/2, height/2 - 200);
+  text("Welcome to", width/2, height/2 - 250);
+  textSize(90);
+  text("SPAMBAM", width/2, (height/2 - 220) + 50);
   textSize(25);
-  text("<-- Swipe left on SPAM", width/2 - 250, height/2);
-  text("Click a response to NOT SPAM", width/2 + 200, height/2);
+  text("<-- Swipe left for SPAM", width/2 - 250, height/2);
+  text("Select right response for NOT SPAM -->", width/2 + 200, height/2);
   textAlign(LEFT, TOP);
 }
 
 void drawEndScreen(){
-  background(100);
+  background(62, 29, 138);
   fill(240);
   textAlign(CENTER, CENTER);
   textSize(50);
   text("Training Complete", width/2, height/2 - 200);
   textSize(30);
   text("You went through all emails in " + finalTime, width/2, height/2);
-  text("You score is: " + score, width/2, height/2 + 100);
+  text("You score is: " + score + " out of " + numEmails*100, width/2, height/2 + 100);
   text("Click to play again", width/2, height/2+200);
   textAlign(LEFT, TOP);
 }
@@ -260,17 +261,10 @@ void drawEmails(){
   }
 }
 
-void createEmails(){  
-  arr.add(genMail());
-  arr.add(genMail());
-  arr.add(genMail());
-  arr.add(genMail());
-  arr.add(genMail());
-  arr.add(genMail());
-  arr.add(genMail());
-  arr.add(genMail());
-  arr.add(genMail());
-  arr.add(genMail());
+void createEmails(){
+  for (int i=0; i<numEmails; i++) {
+    arr.add(genMail());
+  }
 }
 
 // generates random emails
@@ -357,7 +351,7 @@ void setButtons(){
 void drawBg(){
   
   background(225);
-  fill(225);
+  fill(138, 119, 181);
   checkSpam();
   checkGameOver();
   
@@ -430,11 +424,6 @@ void mousePressed(){
 
 // detects the swipe direction
 void mouseDragged(){
-  //println("press");
-  //if((pmouseX - mouseX) < 0){
-  //   swipeRight = true;
-  //   //println("Right");
-  //}
   if((pmouseX - mouseX) > 0){
     swipeLeft = true;
     //println("Left");
